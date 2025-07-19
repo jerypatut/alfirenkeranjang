@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alfiren - Toko Online & Tour Travel Profesional</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Custom scrollbar style */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #f97316; /* orange-600 */
+      border-radius: 10px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #f1f5f9; /* slate-100 */
+    }
+    /* Animasi goyang untuk keranjang */
+    @keyframes shake {
+        0%, 100% { transform: rotate(0deg); }
+        25% { transform: rotate(-15deg); }
+        50% { transform: rotate(15deg); }
+        75% { transform: rotate(-15deg); }
+    }
+    .shake {
+        animation: shake 0.4s ease-in-out;
+    }
+    /* Style untuk tombol pembayaran aktif */
+    .payment-btn.active {
+        background-color: #fb923c; /* orange-400 */
+        color: white;
+        border-color: #f97316; /* orange-500 */
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+
+<header class="bg-white/90 backdrop-blur-lg shadow-sm sticky top-0 z-40">
+  <nav class="max-w-7xl mx-auto flex items-center justify-between p-4 lg:px-8">
+    <a href="#" class="text-orange-600 font-bold text-2xl tracking-tight">Alfiren</a>
+    
+    <ul class="hidden md:flex items-center space-x-8 font-bold text-slate-700">
+      <li><a href="#beranda" class="hover:text-orange-600 transition-colors duration-300">Beranda</a></li>
+      <li><a href="#produk" class="hover:text-orange-600 transition-colors duration-300">Produk</a></li>
+      <li><a href="#travel" class="hover:text-orange-600 transition-colors duration-300">Travel</a></li>
+      <li><a href="#kontak" class="hover:text-orange-600 transition-colors duration-300">Kontak</a></li>
+    </ul>
+
+    <div class="flex items-center space-x-4">
+      <a id="view-cart-link" href="keranjang.html" class="hidden text-orange-600 font-semibold hover:underline transition-all duration-300">Lihat Keranjangmu</a>
+      <a id="cart-container" href="keranjang.html" aria-label="Keranjang Belanja" class="relative text-slate-500 hover:text-orange-600 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 7M7 13l-2 7h14M9 21a2 2 0 11-4 0m12 0a2 2 0 11-4 0"/>
+        </svg>
+        <span id="cart-count" class="absolute -top-1 -right-2 bg-red-600 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+      </a>
+      <button id="mobile-menu-button" aria-label="Buka Menu" class="md:hidden text-slate-600">
+        <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" /></svg>
+        <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+      </button>
+    </div>
+  </nav>
+  <div id="mobile-menu" class="hidden md:hidden">
+    <ul class="px-4 pt-2 pb-4 space-y-2 font-bold text-slate-700">
+      <li><a href="#beranda" class="block py-2 px-2 rounded-lg hover:bg-orange-50 hover:text-orange-600">Beranda</a></li>
+      <li><a href="#produk" class="block py-2 px-2 rounded-lg hover:bg-orange-50 hover:text-orange-600">Produk</a></li>
+      <li><a href="#travel" class="block py-2 px-2 rounded-lg hover:bg-orange-50 hover:text-orange-600">Travel</a></li>
+      <li><a href="#kontak" class="block py-2 px-2 rounded-lg hover:bg-orange-50 hover:text-orange-600">Kontak</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <section id="beranda" class="bg-orange-500 bg-[url('data:image/svg+xml,%3csvg width=\"24\" height=\"24\" viewBox=\"0 0 24 24\" fill=\"none\" xmlns=\"http://www.w3.org/2000/svg\"%3e%3ccircle cx=\"2\" cy=\"2\" r=\"2\" fill=\"%23ea580c\"/%3e%3c/svg%3e')] bg-[length:24px_24px]">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 md:py-24 flex flex-col-reverse md:flex-row justify-between items-center gap-12">
+      <div class="max-w-2xl text-white text-center md:text-left">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-extrabold mb-4 leading-tight">Selamat Datang di <span class="underline decoration-white decoration-4 underline-offset-8">Alfiren</span></h1>
+        <p class="mb-8 text-orange-100 text-lg lg:text-xl">Toko online terpercaya untuk kebutuhan air galon, fashion, dan jasa travel terbaik.</p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+          <a href="#produk" class="inline-block bg-white text-orange-600 font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-slate-100 transition-all duration-300 transform hover:scale-105">Belanja Sekarang</a>
+          <a href="#travel" class="inline-block bg-orange-700/80 backdrop-blur-sm text-white font-bold py-3 px-8 rounded-lg shadow-lg hover:bg-orange-700 transition-all duration-300 transform hover:scale-105">Pesan Travel</a>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl p-8 w-full max-w-md shadow-2xl">
+        <div class="flex flex-col items-center space-y-4">
+          <div class="text-orange-600">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+          </div>
+          <h2 class="font-bold text-xl text-center">Layanan Profesional Kami</h2>
+          <ul class="text-base text-slate-600 space-y-3 pt-2">
+            <li class="flex items-center gap-3"><svg class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>Air Galon Berkualitas & Higienis</span></li>
+            <li class="flex items-center gap-3"><svg class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>Produk Fashion Model Terbaru</span></li>
+            <li class="flex items-center gap-3"><svg class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>Jasa Tour Travel Aman & Nyaman</span></li>
+            <li class="flex items-center gap-3"><svg class="w-6 h-6 text-green-500 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>Pengantaran Cepat & Tepat Waktu</span></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-white py-16 lg:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-center font-bold text-slate-900 mb-12 text-3xl sm:text-4xl">Jelajahi Kategori</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <a href="#produk-air-galon" class="group block">
+          <article class="bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-6 text-center h-full">
+            <div class="aspect-video w-full overflow-hidden rounded-lg mb-4">
+              <img src="/galon1.webp" alt="Air Galon jernih dan segar" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <h3 class="font-bold text-slate-900 text-xl mb-2">Air Galon</h3>
+            <p class="text-sm text-slate-500">Air minum berkualitas untuk kebutuhan sehari-hari.</p>
+          </article>
+        </a>
+        <a href="#produk-fashion" class="group block">
+          <article class="bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-6 text-center h-full">
+            <div class="aspect-video w-full overflow-hidden rounded-lg mb-4">
+              <img src="/baju.jpg" alt="Kaos fashion modern" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <h3 class="font-bold text-slate-900 text-xl mb-2">Fashion</h3>
+            <p class="text-sm text-slate-500">Baju dan sepatu dengan model terbaru.</p>
+          </article>
+        </a>
+        <a href="#produk-lainnya" class="group block">
+          <article class="bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-6 text-center h-full">
+            <div class="aspect-video w-full overflow-hidden rounded-lg mb-4">
+              <img src="/sehari.jpeg" alt="Berbagai macam produk kebutuhan harian" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <h3 class="font-bold text-slate-900 text-xl mb-2">Produk Lainnya</h3>
+            <p class="text-sm text-slate-500">Berbagai produk untuk melengkapi kebutuhan harian.</p>
+          </article>
+        </a>
+        <a href="#travel" class="group block">
+          <article class="bg-white border border-slate-200 rounded-xl shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 p-6 text-center h-full">
+            <div class="aspect-video w-full overflow-hidden rounded-lg mb-4">
+              <img src="travel.jpeg" alt="Pemandangan indah untuk tour travel" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" />
+            </div>
+            <h3 class="font-bold text-slate-900 text-xl mb-2">Tour Travel</h3>
+            <p class="text-sm text-slate-500">Layanan travel dengan berbagai paket menarik.</p>
+          </article>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="produk" class="bg-slate-50 py-16 lg:py-20">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="font-bold text-slate-900 text-3xl sm:text-4xl">Produk Kami</h2>
+        <p class="text-slate-600 text-lg mt-3 max-w-2xl mx-auto">Temukan produk berkualitas dengan harga terbaik untuk kebutuhan Anda.</p>
+      </div>
+
+      <div id="produk-air-galon" class="mb-12 scroll-mt-24">
+        <h3 class="flex items-center text-orange-600 font-bold mb-6 border-l-4 border-orange-500 pl-4 text-2xl">Air Galon</h3>
+        <div class="max-w-sm bg-white rounded-xl shadow-lg p-6">
+          <div class="aspect-square w-full overflow-hidden rounded-lg mb-4">
+            <img src="galon1.webp" alt="Air Galon Mineral" class="w-full h-full object-cover" />
+          </div>
+          <h4 class="font-bold text-slate-900 text-lg">Air Galon Mineral</h4>
+          <p class="text-sm text-slate-500 my-2">Air minum berkualitas tinggi untuk kebutuhan sehari-hari.</p>
+          <div class="flex items-center justify-between my-4">
+            <span class="text-orange-600 font-extrabold text-2xl">Rp 8.000</span>
+          </div>
+          <div class="space-y-3">
+              <button class="add-to-cart-btn w-full bg-orange-600 text-white font-bold text-base rounded-lg py-3 hover:bg-orange-700 transition-all transform hover:scale-105">Tambah ke Keranjang</button>
+              <button class="w-full bg-green-500 text-white font-bold text-base rounded-lg py-3 hover:bg-green-600 transition-all flex items-center justify-center gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M3.5 2.75a.75.75 0 00-1.5 0v14.5a.75.75 0 001.5 0v-3.383c.39-.134.809-.233 1.25-.285a13.492 13.492 0 011.146-.062c.456.01.905.06 1.346.15l.137.028c.553.114 1.12.275 1.706.473a10.02 10.02 0 005.15-2.295.75.75 0 00-1.06-1.06 8.52 8.52 0 01-4.39 1.954c-.58-.146-1.152-.32-1.714-.512a12.022 12.022 0 00-1.122-.196 11.99 11.99 0 00-1.612.068c-.6.104-1.18.283-1.748.514V2.75z" /></svg>
+                <a href="https://wa.me/6282236942818">Chat Penjual</a>
+              </button>
+          </div>
+        </div>
+      </div>
+      <div id="produk-fashion" class="mb-12 scroll-mt-24">
+        <h3 class="flex items-center text-orange-600 font-bold mb-6 border-l-4 border-orange-500 pl-4 text-2xl">Fashion</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          <article class="bg-white rounded-xl shadow-lg p-6">
+            <div class="aspect-square w-full overflow-hidden rounded-lg mb-4"><img src="/baju.jpg" alt="Kaos Premium" class="w-full h-full object-cover" /></div>
+            <h4 class="font-bold text-slate-900 text-lg">Kaos Premium</h4>
+            <p class="text-sm text-slate-500 my-2">Kaos bahan premium, nyaman dipakai.</p>
+            <div class="flex items-center justify-between my-4"><span class="text-orange-600 font-extrabold text-2xl">Rp 85.000</span></div>
+            <div class="space-y-3"><button class="add-to-cart-btn w-full bg-orange-600 text-white font-bold text-base rounded-lg py-3 hover:bg-orange-700 transition-all transform hover:scale-105">Tambah ke Keranjang</button><button class="w-full bg-green-500 text-white font-bold text-base rounded-lg py-3 hover:bg-green-600 transition-all flex items-center justify-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M3.5 2.75a.75.75 0 00-1.5 0v14.5a.75.75 0 001.5 0v-3.383c.39-.134.809-.233 1.25-.285a13.492 13.492 0 011.146-.062c.456.01.905.06 1.346.15l.137.028c.553.114 1.12.275 1.706.473a10.02 10.02 0 005.15-2.295.75.75 0 00-1.06-1.06 8.52 8.52 0 01-4.39 1.954c-.58-.146-1.152-.32-1.714-.512a12.022 12.022 0 00-1.122-.196 11.99 11.99 0 00-1.612.068c-.6.104-1.18.283-1.748.514V2.75z" /></svg><a href="https://wa.me/6281234567890">Chat Penjual</a></button></div>
+          </article>
+          <article class="bg-white rounded-xl shadow-lg p-6">
+            <div class="aspect-square w-full overflow-hidden rounded-lg mb-4"><img src="sepatu.avif" alt="Sepatu Casual" class="w-full h-full object-cover" /></div>
+            <h4 class="font-bold text-slate-900 text-lg">Sepatu Casual</h4>
+            <p class="text-sm text-slate-500 my-2">Sepatu desain modern dan nyaman.</p>
+            <div class="flex items-center justify-between my-4"><span class="text-orange-600 font-extrabold text-2xl">Rp 150.000</span></div>
+            <div class="space-y-3"><button class="add-to-cart-btn w-full bg-orange-600 text-white font-bold text-base rounded-lg py-3 hover:bg-orange-700 transition-all transform hover:scale-105">Tambah ke Keranjang</button><button class="w-full bg-green-500 text-white font-bold text-base rounded-lg py-3 hover:bg-green-600 transition-all flex items-center justify-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M3.5 2.75a.75.75 0 00-1.5 0v14.5a.75.75 0 001.5 0v-3.383c.39-.134.809-.233 1.25-.285a13.492 13.492 0 011.146-.062c.456.01.905.06 1.346.15l.137.028c.553.114 1.12.275 1.706.473a10.02 10.02 0 005.15-2.295.75.75 0 00-1.06-1.06 8.52 8.52 0 01-4.39 1.954c-.58-.146-1.152-.32-1.714-.512a12.022 12.022 0 00-1.122-.196 11.99 11.99 0 00-1.612.068c-.6.104-1.18.283-1.748.514V2.75z" /></svg><a href="https://wa.me/6281234567890">Chat Penjual</a></button></div>
+          </article>
+        </div>
+      </div>
+      <div id="produk-lainnya" class="scroll-mt-24">
+        <h3 class="flex items-center text-orange-600 font-bold mb-6 border-l-4 border-orange-500 pl-4 text-2xl">Produk Lainnya</h3>
+        <div class="max-w-sm bg-white rounded-xl shadow-lg p-6">
+          <div class="aspect-square w-full overflow-hidden rounded-lg mb-4"><img src="sehari.jpeg" alt="Paket Kebutuhan Sehari-hari" class="w-full h-full object-cover" /></div>
+          <h4 class="font-bold text-slate-900 text-lg">Paket Sehari-hari</h4>
+          <p class="text-sm text-slate-500 my-2">Produk berkualitas untuk kebutuhan sehari-hari Anda.</p>
+          <div class="flex items-center justify-between my-4"><span class="text-orange-600 font-extrabold text-2xl">Rp 45.000</span></div>
+          <div class="space-y-3"><button class="add-to-cart-btn w-full bg-orange-600 text-white font-bold text-base rounded-lg py-3 hover:bg-orange-700 transition-all transform hover:scale-105">Tambah ke Keranjang</button><button class="w-full bg-green-500 text-white font-bold text-base rounded-lg py-3 hover:bg-green-600 transition-all flex items-center justify-center gap-2"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5"><path d="M3.5 2.75a.75.75 0 00-1.5 0v14.5a.75.75 0 001.5 0v-3.383c.39-.134.809-.233 1.25-.285a13.492 13.492 0 011.146-.062c.456.01.905.06 1.346.15l.137.028c.553.114 1.12.275 1.706.473a10.02 10.02 0 005.15-2.295.75.75 0 00-1.06-1.06 8.52 8.52 0 01-4.39 1.954c-.58-.146-1.152-.32-1.714-.512a12.022 12.022 0 00-1.122-.196 11.99 11.99 0 00-1.612.068c-.6.104-1.18.283-1.748.514V2.75z" /></svg><a href="https://wa.me/6281234567890">Chat Penjual</a></button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="travel" class="bg-white py-16 lg:py-20 scroll-mt-24">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="font-bold text-slate-900 text-3xl sm:text-4xl">Layanan Tour Travel</h2>
+        <p class="text-slate-600 text-lg mt-3 max-w-2xl mx-auto">Perjalanan nyaman dan aman dengan layanan travel profesional kami.</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-8 mb-12">
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-8">
+          <h3 class="font-bold text-orange-600 text-xl mb-4">Kendaraan Kami</h3>
+          <ul class="space-y-3 text-slate-600">
+            <li class="flex items-start gap-3"><svg class="flex-shrink-0 w-6 h-6 text-green-500 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span><strong>Toyota Innova & Hilux:</strong> Nyaman untuk keluarga & tangguh di segala medan.</span></li>
+            <li class="flex items-start gap-3"><svg class="flex-shrink-0 w-6 h-6 text-green-500 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span><strong>Mitsubishi L300:</strong> Andal untuk pengantaran logistik.</span></li>
+            <li class="flex items-start gap-3"><svg class="flex-shrink-0 w-6 h-6 text-green-500 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span><strong>Sepeda Motor:</strong> Solusi pengantaran cepat di perkotaan.</span></li>
+          </ul>
+        </div>
+        <div class="bg-slate-50 border border-slate-200 rounded-xl p-8">
+          <h3 class="font-bold text-orange-600 text-xl mb-4">Keunggulan Layanan</h3>
+          <ul class="space-y-3 text-slate-600">
+            <li class="flex items-start gap-3"><svg class="flex-shrink-0 w-6 h-6 text-green-500 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>Driver profesional, ramah, dan berpengalaman.</span></li>
+            <li class="flex items-start gap-3"><svg class="flex-shrink-0 w-6 h-6 text-green-500 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>Armada terawat, bersih, dan super nyaman.</span></li>
+            <li class="flex items-start gap-3"><svg class="flex-shrink-0 w-6 h-6 text-green-500 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg><span>Harga kompetitif & paket bisa di-custom.</span></li>
+          </ul>
+        </div>
+      </div>
+      <h3 class="text-center font-bold text-slate-900 mt-16 mb-10 text-2xl sm:text-3xl">Pilihan Paket Fleksibel</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div class="bg-orange-600 text-white rounded-xl shadow-lg p-8 flex flex-col text-center transform hover:-translate-y-2 transition-transform duration-300">
+          <h4 class="font-bold text-xl mb-2">Paket Dalam Kota</h4>
+          <p class="font-extrabold text-4xl my-4">Rp 100k</p>
+          <ul class="text-sm text-orange-100 mb-6 space-y-2 text-left flex-grow"><li class="flex gap-2"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg><span>Driver profesional</span></li><li class="flex gap-2"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg><span>Kendaraan nyaman</span></li></ul>
+          <div class="mt-auto space-y-3"><button onclick="window.location.href='penumpang.html'" 
+  class="w-full bg-white text-orange-600 font-bold rounded-lg py-3 hover:bg-slate-100 transition-colors">
+  Pesan Sekarang
+</button>
+<button class="w-full bg-green-500/90 text-white font-bold rounded-lg py-3 hover:bg-green-500 transition-colors"><a href="https://wa.me/6282236942818">Chat Admin</a></button></div>
+        </div>
+        <div class="bg-slate-800 text-white rounded-xl shadow-lg p-8 flex flex-col text-center ring-4 ring-orange-500 transform hover:-translate-y-2 transition-transform duration-300">
+          <h4 class="font-bold text-xl mb-2">Paket Luar Kota</h4>
+          <p class="font-extrabold text-4xl my-4">Rp 250k+</p>
+          <ul class="text-sm text-slate-300 mb-6 space-y-2 text-left flex-grow"><li class="flex gap-2"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg><span>Rute pergi & PP</span></li><li class="flex gap-2"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg><span>Nego harga terbaik</span></li></ul>
+          <div class="mt-auto space-y-3"><button onclick="window.location.href='penumpang.html'" 
+  class="w-full bg-white text-orange-600 font-bold rounded-lg py-3 hover:bg-slate-100 transition-colors">
+  Pesan Sekarang
+</button>
+<button class="w-full bg-green-500/90 text-white font-bold rounded-lg py-3 hover:bg-green-500 transition-colors"><a href="https://wa.me/6282236942818">Chat Admin</a></button></div>
+        </div>
+        <div class="bg-orange-600 text-white rounded-xl shadow-lg p-8 flex flex-col text-center transform hover:-translate-y-2 transition-transform duration-300">
+          <h4 class="font-bold text-xl mb-2">Antar Jemput</h4>
+          <p class="font-extrabold text-4xl my-4">Rp 200k+</p>
+          <ul class="text-sm text-orange-100 mb-6 space-y-2 text-left flex-grow"><li class="flex gap-2"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg><span>Dalam & luar kota</span></li><li class="flex gap-2"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg><span>Bandara & stasiun</span></li></ul>
+          <div class="mt-auto space-y-3"><button onclick="window.location.href='penumpang.html'" 
+  class="w-full bg-white text-orange-600 font-bold rounded-lg py-3 hover:bg-slate-100 transition-colors">
+  Pesan Sekarang
+</button>
+<button class="w-full bg-green-500/90 text-white font-bold rounded-lg py-3 hover:bg-green-500 transition-colors"><a href="https://wa.me/6282236942818">Chat Admin</a></button></div>
+        </div>
+        <div class="bg-orange-600 text-white rounded-xl shadow-lg p-8 flex flex-col text-center transform hover:-translate-y-2 transition-transform duration-300">
+          <h4 class="font-bold text-xl mb-2">Custom Tour</h4>
+          <p class="font-extrabold text-4xl my-4">Rp 500k+</p>
+          <ul class="text-sm text-orange-100 mb-6 space-y-2 text-left flex-grow"><li class="flex gap-2"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg><span>Tour 1 hari / lebih</span></li><li class="flex gap-2"><svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" /></svg><span>Durasi & tujuan bebas</span></li></ul>
+          <div class="mt-auto space-y-3"><button onclick="window.location.href='penumpang.html'" 
+  class="w-full bg-white text-orange-600 font-bold rounded-lg py-3 hover:bg-slate-100 transition-colors">
+  Pesan Sekarang
+</button>
+<button class="w-full bg-green-500/90 text-white font-bold rounded-lg py-3 hover:bg-green-500 transition-colors"><a href="https://wa.me/6282236942818">Chat Admin</a></button></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="kontak" class="bg-slate-50 py-16 lg:py-20">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="font-bold text-slate-900 text-3xl sm:text-4xl">Hubungi Kami</h2>
+        <p class="text-slate-600 text-lg mt-3 max-w-2xl mx-auto">Punya pertanyaan atau ingin memesan? Jangan ragu untuk menghubungi kami.</p>
+      </div>
+      <div class="grid md:grid-cols-5 gap-8 lg:gap-12 bg-white p-8 rounded-2xl shadow-xl border border-slate-200">
+        <div class="md:col-span-2">
+          <h3 class="font-bold text-slate-900 text-xl mb-6">Informasi & Pembayaran</h3>
+          <ul class="space-y-6 text-base">
+            <li class="flex items-start gap-4"><svg class="flex-shrink-0 h-7 w-7 text-orange-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z" /></svg><div><p class="font-bold text-slate-800">Whatsapp</p><p class="text-slate-500">+62 812 3456 7890</p></div></li>
+            <li class="flex items-start gap-4"><svg class="flex-shrink-0 h-7 w-7 text-orange-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" /></svg><div><p class="font-bold text-slate-800">Email</p><p class="text-slate-500 lowercase">info@alfiren.com</p></div></li>
+            <li class="flex items-start gap-4"><svg class="flex-shrink-0 h-7 w-7 text-orange-500" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" /><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" /></svg><div><p class="font-bold text-slate-800">Alamat</p><p class="text-slate-500">Jl. Utama No. 123, Kota Anda, Indonesia</p></div></li>
+          </ul>
+          <div class="mt-8 pt-6 border-t border-slate-200">
+            <h4 class="font-bold text-slate-900 mb-3">Metode Pembayaran</h4>
+            <div class="flex flex-wrap gap-3">
+              <span class="border border-slate-300 rounded-md px-4 py-2 text-sm font-semibold">Transfer Bank</span>
+              <span class="border border-green-400 bg-green-50 text-green-800 rounded-md px-4 py-2 text-sm font-semibold">QRIS</span>
+              <span class="border border-yellow-400 bg-yellow-50 text-yellow-800 rounded-md px-4 py-2 text-sm font-semibold">COD</span>
+            </div>
+          </div>
+        </div>
+ <form id="waForm" class="md:col-span-3 space-y-5">
+  <div>
+    <label for="namaLengkap" class="block mb-2 font-bold text-slate-700">Nama Lengkap</label>
+    <input type="text" id="namaLengkap" name="namaLengkap" placeholder="Masukkan nama Anda" required class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+  </div>
+  <div>
+    <label for="emailPesan" class="block mb-2 font-bold text-slate-700">Email</label>
+    <input type="email" id="emailPesan" name="emailPesan" placeholder="contoh@email.com" required class="w-full border border-slate-300 rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-500" />
+  </div>
+  <div>
+    <label for="pesan" class="block mb-2 font-bold text-slate-700">Pesan Anda</label>
+    <textarea id="pesan" name="pesan" rows="5" placeholder="Tulis pesan Anda di sini..." required class="w-full border border-slate-300 rounded-lg px-4 py-3 resize-y focus:outline-none focus:ring-2 focus:ring-orange-500"></textarea>
+  </div>
+  
+  <button
+    type="submit"
+    class="w-full bg-orange-600 text-white font-bold text-lg rounded-lg py-3 hover:bg-orange-700 transition-all duration-300 transform hover:scale-105 active:scale-100"
+  >
+    Kirim Pesan
+  </button>
+</form>
+
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="bg-slate-800 text-slate-400">
+  <div class="max-w-7xl mx-auto px-8 py-12">
+    <div class="flex flex-col md:flex-row justify-between items-center gap-8">
+      <div>
+        <h4 class="font-bold text-white text-xl mb-2">Alfiren</h4>
+        <p class="text-sm max-w-sm">Toko online dan jasa travel terpercaya untuk segala kebutuhan Anda. Kami berkomitmen memberikan produk berkualitas dan layanan terbaik.</p>
+      </div>
+      <div class="flex space-x-6">
+        <a href="#" aria-label="Facebook" class="text-slate-400 hover:text-white transition-colors"><svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M22.675 0h-21.35C.597 0 0 .597 0 1.333v21.334C0 23.403.597 24 1.333 24H12v-9.333H9.333v-3.333H12V8.667c0-2.583 1.575-4 4.125-4 1.2 0 2.225.112 2.525.162v2.933h-1.737c-1.362 0-1.625.647-1.625 1.597v2.093h3.248l-.425 3.333H15.288V24h7.387c.736 0 1.333-.597 1.333-1.333V1.333C24 .597 23.403 0 22.675 0z"/></svg></a>
+        <a href="#" aria-label="Instagram" class="text-slate-400 hover:text-white transition-colors"><svg class="h-6 w-6 fill-current" viewBox="0 0 24 24"><path d="M7.75 2h8.5A5.75 5.75 0 0 1 22 7.75v8.5A5.75 5.75 0 0 1 16.25 22h-8.5A5.75 5.75 0 0 1 2 16.25v-8.5A5.75 5.75 0 0 1 7.75 2zm0 1.5A4.25 4.25 0 0 0 3.5 7.75v8.5A4.25 4.25 0 0 0 7.75 20.5h8.5a4.25 4.25 0 0 0 4.25-4.25v-8.5A4.25 4.25 0 0 0 16.25 3.5h-8.5zm8.25 3a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 1.5a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7z"/></svg></a>
+      </div>
+    </div>
+    <div class="mt-10 border-t border-slate-700 pt-8 text-center text-sm">
+      <p>&copy; 2025 Alfiren. Semua Hak Cipta Dilindungi.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+    document.getElementById('waForm').addEventListener('submit', function (e) {
+    e.preventDefault(); // Mencegah reload halaman
+
+    const nama = document.getElementById('namaLengkap').value;
+    const email = document.getElementById('emailPesan').value;
+    const pesan = document.getElementById('pesan').value;
+
+    const nomorWa = '6282236942818';
+    const text = `Halo admin, saya ingin menghubungi Anda.%0A%0ANama: ${encodeURIComponent(nama)}%0AEmail: ${encodeURIComponent(email)}%0APesan: ${encodeURIComponent(pesan)}`;
+
+    const url = `https://wa.me/${nomorWa}?text=${text}`;
+    window.open(url, '_blank');
+  });
+  // JavaScript untuk toggle menu mobile
+  const mobileMenuButton = document.getElementById('mobile-menu-button');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const menuIconOpen = document.getElementById('menu-icon-open');
+  const menuIconClose = document.getElementById('menu-icon-close');
+
+  mobileMenuButton.addEventListener('click', () => {
+    mobileMenu.classList.toggle('hidden');
+    menuIconOpen.classList.toggle('hidden');
+    menuIconClose.classList.toggle('hidden');
+  });
+
+  // JavaScript untuk animasi keranjang
+  document.addEventListener('DOMContentLoaded', () => {
+    const addToCartButtons = document.querySelectorAll('.add-to-cart-btn');
+    const cartContainer = document.getElementById('cart-container');
+    const cartCountSpan = document.getElementById('cart-count');
+    const viewCartLink = document.getElementById('view-cart-link');
+
+    let cartItemCount = 0;
+
+    addToCartButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault(); // Mencegah aksi default tombol
+
+            // 1. Tambah jumlah item di keranjang
+            cartItemCount++;
+            cartCountSpan.textContent = cartItemCount;
+
+            // 2. Tampilkan notifikasi jumlah item
+            if (cartCountSpan.classList.contains('hidden')) {
+                cartCountSpan.classList.remove('hidden');
+            }
+
+            // 3. Goyangkan ikon keranjang
+            cartContainer.classList.add('shake');
+
+            // 4. Tampilkan link "Lihat Keranjangmu"
+            viewCartLink.classList.remove('hidden');
+
+            // 5. Hapus animasi setelah selesai agar bisa di-trigger lagi
+            setTimeout(() => {
+                cartContainer.classList.remove('shake');
+            }, 400); // Sesuaikan dengan durasi animasi di CSS
+        });
+    });
+  });
+</script>
+
+</body>
+</html>

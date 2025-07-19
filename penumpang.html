@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfiren - Pesan Travel Lengkap & Modern</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/css/heroicons.min.css" rel="stylesheet">
+    <style>
+        /* Base styles for a cleaner look */
+        body { background-color: #F9FAFB; font-family: 'Inter', sans-serif; }
+        @import url('https://rsms.me/inter/inter.css');
+        
+        /* State management for steps and payment info */
+        .step-view, .payment-info-content { display: none; }
+        .step-view.active, .payment-info-content.active { display: block; }
+
+        /* Modal visibility */
+        #invoice-modal { display: none; }
+        #invoice-modal.active { display: flex; }
+
+        /* Icon classes for heroicons */
+        .s-check, .s-map-pin, .s-chat-bubble-left-right, .s-x-mark, .s-shopping-cart {
+            display: inline-block;
+            width: 1.5rem; 
+            height: 1.5rem;
+            background-color: currentColor;
+            -webkit-mask-size: cover;
+            mask-size: cover;
+        }
+        .s-check { -webkit-mask-image: url('https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/check.svg'); mask-image: url('https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/check.svg'); width: 1.25rem; height: 1.25rem; }
+        .s-map-pin { -webkit-mask-image: url('https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/map-pin.svg'); mask-image: url('https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/map-pin.svg'); width: 1.25rem; height: 1.25rem; }
+        .s-chat-bubble-left-right { -webkit-mask-image: url('https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/chat-bubble-left-right.svg'); mask-image: url('https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/chat-bubble-left-right.svg'); width: 1.25rem; height: 1.25rem; }
+        .s-x-mark { -webkit-mask-image: url('https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/x-mark.svg'); mask-image: url('https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/x-mark.svg'); }
+        .s-shopping-cart { -webkit-mask-image: url('https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/shopping-cart.svg'); mask-image: url('https://cdnjs.cloudflare.com/ajax/libs/heroicons/2.1.1/24/solid/shopping-cart.svg'); }
+
+        /* CSS untuk tombol print */
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            #invoice-modal .max-w-2xl, #invoice-modal .max-w-2xl * {
+                visibility: visible;
+            }
+            #invoice-modal .max-w-2xl {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                max-width: 100%;
+                box-shadow: none;
+                border: none;
+                max-height: none;
+            }
+            #invoice-modal .gap-3 { display: none; }
+        }
+    </style>
+</head>
+<body class="text-gray-800">
+
+    <header class="bg-white shadow-sm sticky top-0 z-40">
+        <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <a href="index.html" class="text-2xl font-bold text-gray-900">Alfiren</a>
+                 <ul class="hidden md:flex items-center space-x-8 font-bold text-slate-700">
+                     <li><a href="home.html#beranda" class="hover:text-orange-600 transition-colors duration-300">Beranda</a></li>
+                     <li><a href="home.html#produk" class="hover:text-orange-600 transition-colors duration-300">Produk</a></li>
+                     <li><a href="home.html#travel" class="hover:text-orange-600 transition-colors duration-300">Travel</a></li>
+                     <li><a href="home.html#kontak" class="hover:text-orange-600 transition-colors duration-300">Kontak</a></li>
+                 </ul>
+                <div class="flex items-center gap-4">
+                    <a id="view-cart-link" href="home.html" class="hidden text-orange-600 font-semibold hover:underline">Lihat Keranjangmu</a>
+                    <div id="cart-icon" class="text-gray-600">
+                        <i class="s-shopping-cart"></i>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main class="py-12 sm:py-16">
+        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-4xl mx-auto mb-12">
+                <h1 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-8 text-center">Pesan Perjalanan Anda</h1>
+                <div id="stepper" class="flex items-start justify-center sm:justify-between">
+                    <div id="stepper-1" class="step-indicator flex items-center flex-col sm:flex-row w-1/4"><div class="circle flex items-center justify-center w-10 h-10 font-bold rounded-full transition-colors duration-300">1</div><p class="label mt-2 sm:mt-0 sm:ml-3 font-semibold text-center text-sm sm:text-base">Jumlah Penumpang</p></div>
+                    <div class="flex-grow border-t-2 border-gray-200 mx-2 mt-5 hidden sm:block"></div>
+                    <div id="stepper-2" class="step-indicator flex items-center flex-col sm:flex-row w-1/4"><div class="circle flex items-center justify-center w-10 h-10 font-bold rounded-full transition-colors duration-300">2</div><p class="label mt-2 sm:mt-0 sm:ml-3 font-semibold text-center text-sm sm:text-base">Data Penumpang</p></div>
+                    <div class="flex-grow border-t-2 border-gray-200 mx-2 mt-5 hidden sm:block"></div>
+                    <div id="stepper-3" class="step-indicator flex items-center flex-col sm:flex-row w-1/4"><div class="circle flex items-center justify-center w-10 h-10 font-bold rounded-full transition-colors duration-300">3</div><p class="label mt-2 sm:mt-0 sm:ml-3 font-semibold text-center text-sm sm:text-base">Pilih Kendaraan</p></div>
+                    <div class="flex-grow border-t-2 border-gray-200 mx-2 mt-5 hidden sm:block"></div>
+                    <div id="stepper-4" class="step-indicator flex items-center flex-col sm:flex-row w-1/4"><div class="circle flex items-center justify-center w-10 h-10 font-bold rounded-full transition-colors duration-300">4</div><p class="label mt-2 sm:mt-0 sm:ml-3 font-semibold text-center text-sm sm:text-base">Pembayaran</p></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-12 max-w-7xl mx-auto">
+                <div class="lg:col-span-2 bg-white p-6 sm:p-8 rounded-xl shadow-lg">
+                    
+                    <div id="step-1-view" class="step-view">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">1. Pilih Jumlah Penumpang</h2>
+                        <div id="passenger-options" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+                            <div data-penumpang="1" class="passenger-box cursor-pointer text-center p-4 border-2 border-gray-300 rounded-lg transition-all duration-200 hover:border-orange-400 hover:shadow-md"><p class="text-3xl font-bold text-gray-700 pointer-events-none">1</p><p class="text-sm font-semibold text-gray-600 pointer-events-none">Penumpang</p></div>
+                            <div data-penumpang="2" class="passenger-box cursor-pointer text-center p-4 border-2 border-gray-300 rounded-lg transition-all duration-200 hover:border-orange-400 hover:shadow-md"><p class="text-3xl font-bold text-gray-700 pointer-events-none">2</p><p class="text-sm font-semibold text-gray-600 pointer-events-none">Penumpang</p></div>
+                            <div data-penumpang="3" class="passenger-box cursor-pointer text-center p-4 border-2 border-gray-300 rounded-lg transition-all duration-200 hover:border-orange-400 hover:shadow-md"><p class="text-3xl font-bold text-gray-700 pointer-events-none">3</p><p class="text-sm font-semibold text-gray-600 pointer-events-none">Penumpang</p></div>
+                            <div data-penumpang="4" class="passenger-box cursor-pointer text-center p-4 border-2 border-gray-300 rounded-lg transition-all duration-200 hover:border-orange-400 hover:shadow-md"><p class="text-3xl font-bold text-gray-700 pointer-events-none">4</p><p class="text-sm font-semibold text-gray-600 pointer-events-none">Penumpang</p></div>
+                            <div data-penumpang="5" class="passenger-box cursor-pointer text-center p-4 border-2 border-gray-300 rounded-lg transition-all duration-200 hover:border-orange-400 hover:shadow-md"><p class="text-3xl font-bold text-gray-700 pointer-events-none">5</p><p class="text-sm font-semibold text-gray-600 pointer-events-none">Penumpang</p></div>
+                        </div>
+                        <div class="flex justify-end mt-8"><button class="btn-next w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-10 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">Lanjutkan</button></div>
+                    </div>
+
+                    <div id="step-2-view" class="step-view">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">2. Isi Data Penumpang</h2>
+                        <section class="bg-orange-50 border border-orange-200 rounded-lg p-6 mb-8">
+                            <h3 class="font-bold text-lg text-gray-800 mb-4">Informasi Kontak Pemesan</h3>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                                <div><label for="nama_pemesan" class="block text-sm font-medium text-gray-700">Nama Pemesan <span class="text-red-500">*</span></label><input type="text" id="nama_pemesan" placeholder="Nama kontak utama" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200" required></div>
+                                <div><label for="telepon_pemesan" class="block text-sm font-medium text-gray-700">Nomor Telepon <span class="text-red-500">*</span></label><input type="tel" id="telepon_pemesan" placeholder="0812..." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200" required></div>
+                                <div><label for="email_pemesan" class="block text-sm font-medium text-gray-700">Email <span class="text-red-500">*</span></label><input type="email" id="email_pemesan" placeholder="Untuk e-tiket" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200" required></div>
+                                <div>
+                                    <label for="nama_paket" class="block text-sm font-medium text-gray-700">Pilih Paket</label>
+                                    <select id="nama_paket" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200">
+                                        </select>
+                                    <p id="paket-info" class="text-xs text-gray-500 mt-1"></p>
+                                </div>
+                                <div class="md:col-span-2"><label for="alamat_penjemputan" class="block text-sm font-medium text-gray-700">Alamat Lokasi Penjemputan <span class="text-red-500">*</span></label><textarea id="alamat_penjemputan" rows="3" placeholder="Alamat lengkap di Labuan Bajo" class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200" required></textarea></div>
+                            </div>
+                        </section>
+                        <div id="passenger-forms-container" class="space-y-8"></div>
+                        <div class="flex justify-between items-center mt-8">
+                            <button class="btn-prev text-gray-600 font-semibold hover:text-orange-500 transition-colors">&larr; Kembali</button>
+                            <button class="btn-next w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-10 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">Lanjutkan</button>
+                        </div>
+                    </div>
+
+                    <div id="step-3-view" class="step-view">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">3. Pilih Kendaraan Antar-Jemput</h2>
+                        <div id="vehicle-options" class="space-y-4">
+                            <div class="border-2 border-gray-300 rounded-lg p-4 cursor-pointer transition-all duration-200"><label class="flex items-center w-full"><input type="radio" name="vehicle" class="h-4 w-4 text-orange-600 focus:ring-orange-500" data-name="Toyota Innova"><div class="ml-4 flex-grow"><p class="font-bold">Toyota Innova</p><p class="text-sm text-gray-500">Kapasitas: 7 penumpang</p></div><span class="font-semibold text-gray-800">Rp 650.000<span class="font-normal text-gray-500 text-sm">/hari</span></span></label></div>
+                            <div class="border-2 border-gray-300 rounded-lg p-4 cursor-pointer transition-all duration-200"><label class="flex items-center w-full"><input type="radio" name="vehicle" class="h-4 w-4 text-orange-600 focus:ring-orange-500" data-name="Toyota Hilux" checked><div class="ml-4 flex-grow"><p class="font-bold">Toyota Hilux</p><p class="text-sm text-gray-500">Kapasitas: 5 penumpang</p></div><span class="font-semibold text-gray-800">Rp 750.000<span class="font-normal text-gray-500 text-sm">/hari</span></span></label></div>
+                        </div>
+                        <div id="vehicle-specs-container" class="mt-5 p-4 text-sm text-gray-700 bg-gray-50 rounded-lg border-l-4 border-orange-300"></div>
+                        <div class="mt-6"><label for="catatan_driver" class="block text-sm font-medium text-gray-700">Catatan Tambahan untuk Driver (Opsional)</label><textarea id="catatan_driver" rows="3" placeholder="Contoh: Saya membawa anak kecil, mohon sediakan car seat jika ada." class="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200"></textarea></div>
+                        <div class="flex justify-between items-center mt-8">
+                            <button class="btn-prev text-gray-600 font-semibold hover:text-orange-500 transition-colors">&larr; Kembali</button>
+                            <button class="btn-next w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 px-10 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">Lanjutkan</button>
+                        </div>
+                    </div>
+                    
+                    <div id="step-4-view" class="step-view">
+                        <h2 class="text-2xl font-bold text-gray-900 mb-6">4. Metode Pembayaran</h2>
+                        <div id="payment-options" class="space-y-4">
+                                <div class="border-2 border-gray-300 rounded-lg p-4 cursor-pointer transition-all duration-200"><label class="flex items-start w-full"><input type="radio" name="payment" value="Transfer Bank" data-target="info-transfer" class="h-5 w-5 text-orange-600 mt-1 focus:ring-orange-500" checked><div class="ml-4 flex-grow"><p class="font-bold">Transfer Bank</p><p class="text-sm text-gray-500">Transfer manual ke rekening virtual account bank kami.</p></div></label></div>
+                                <div class="border-2 border-gray-300 rounded-lg p-4 cursor-pointer transition-all duration-200"><label class="flex items-start w-full"><input type="radio" name="payment" value="QRIS" data-target="info-qris" class="h-5 w-5 text-orange-600 mt-1 focus:ring-orange-500"><div class="ml-4 flex-grow"><p class="font-bold">QRIS</p><p class="text-sm text-gray-500">Scan kode QR untuk pembayaran instan melalui e-wallet atau m-banking.</p></div></label></div>
+                                <div class="border-2 border-gray-300 rounded-lg p-4 cursor-pointer transition-all duration-200"><label class="flex items-start w-full"><input type="radio" name="payment" value="COD" data-target="info-cod" class="h-5 w-5 text-orange-600 mt-1 focus:ring-orange-500"><div class="ml-4 flex-grow"><p class="font-bold">Bayar di Tempat (COD)</p><p class="text-sm text-gray-500">Bayar tunai saat penjemputan. Tim kami akan mengkonfirmasi via WhatsApp.</p></div></label></div>
+                        </div>
+                        <div id="payment-info-container" class="mt-5">
+                            <div id="info-transfer" class="payment-info-content p-4 bg-gray-50 rounded-lg"><p class="font-semibold mb-2">Silakan transfer ke salah satu rekening berikut:</p><div class="space-y-2 text-sm"><div><span class="font-bold">Bank BCA:</span> 1234567890 (a/n PT. Alfiren Indonesia)</div><div><span class="font-bold">Bank BNI:</span> 9876543210 (a/n PT. Alfiren Indonesia)</div></div></div>
+                            <div id="info-qris" class="payment-info-content p-4 bg-gray-50 rounded-lg text-center"><p class="font-semibold mb-2">Scan QR Code di bawah untuk membayar</p><img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://alfiren.com/pay?inv=TRV-2025-007" alt="QR Code" class="mx-auto rounded-lg shadow-md"><p class="text-xs mt-2 text-gray-500">Pastikan nominal pembayaran sudah sesuai dengan total tagihan.</p></div>
+                            <div id="info-cod" class="payment-info-content p-4 bg-blue-50 text-blue-800 rounded-lg"><p class="font-semibold">Konfirmasi via WhatsApp</p><p class="text-sm">Untuk pembayaran di tempat (COD), tim kami akan menghubungi Anda melalui nomor telepon pemesan untuk konfirmasi lebih lanjut.</p></div>
+                        </div>
+                        <div class="flex justify-between items-center mt-8">
+                            <button class="btn-prev text-gray-600 font-semibold hover:text-orange-500 transition-colors">&larr; Kembali</button>
+                            <button id="btn-finish" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-10 rounded-lg shadow-md hover:shadow-lg transition-all duration-200">Selesaikan Pemesanan</button>
+                        </div>
+                    </div>
+                </div>
+
+                <aside class="lg:col-span-1">
+                    <div class="bg-white p-6 sm:p-8 rounded-xl shadow-lg h-fit sticky top-24">
+                        <h3 class="text-xl font-bold text-gray-900 mb-5">Ringkasan Pemesanan</h3>
+                        <div class="flex items-start space-x-4 mb-5">
+                            <i class="s-map-pin text-orange-500 text-2xl mt-1"></i>
+                            <div>
+                                <p id="summary-package-name" class="font-bold text-gray-800">-</p>
+                                <p class="text-sm text-gray-500">Labuan Bajo</p>
+                                <p class="text-sm text-gray-500 mt-1">Tanggal: 19-21 Juli 2025</p>
+                            </div>
+                        </div>
+                        <hr class="my-4">
+                        <div class="space-y-3 text-gray-600">
+                            <div class="flex justify-between"><p>Harga Paket</p><p id="summary-package-price" class="font-semibold text-gray-800">-</p></div>
+                            <div class="flex justify-between"><p>Jumlah Penumpang</p><p id="summary-passenger-count" class="font-semibold text-gray-800">-</p></div>
+                            <div class="flex justify-between items-center"><p>Kendaraan</p><p id="summary-vehicle-name" class="font-semibold text-gray-800 text-right">-</p></div>
+                            <div class="flex justify-between"><p>Biaya Kendaraan</p><p id="summary-vehicle-price" class="font-semibold text-gray-800">-</p></div>
+                        </div>
+                        <hr class="my-4 border-dashed">
+                        <div class="flex justify-between items-center font-bold text-lg">
+                            <p class="text-gray-900">Total</p>
+                            <p id="summary-total-price" class="text-orange-500 text-2xl">-</p>
+                        </div>
+                        <div id="summary-buttons" class="mt-6 space-y-3 hidden">
+                            <p class="text-center text-sm text-green-700 font-semibold bg-green-100 p-3 rounded-lg">Pemesanan Anda Berhasil!</p>
+                            <button id="btn-show-invoice" class="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition-colors duration-200">Lihat Invoice Pemesanan</button>
+                            <button id="btn-send-whatsapp" class="w-full bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 flex items-center justify-center space-x-2 transition-colors duration-200"><i class="s-chat-bubble-left-right"></i><span>Kirim Invoice via WhatsApp</span></button>
+                        </div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </main>
+
+    <div id="invoice-modal" class="fixed inset-0 bg-black bg-opacity-60 z-50 items-center justify-center p-4 transition-opacity duration-300">
+        <div class="bg-white rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative">
+            <button id="btn-close-invoice" class="absolute top-4 right-4 text-gray-400 hover:text-gray-800 transition-colors"><i class="s-x-mark text-3xl"></i></button>
+            <div class="flex flex-col sm:flex-row justify-between sm:items-end text-sm text-gray-500 mb-6 gap-4">
+                <div><h2 class="text-2xl font-bold text-gray-900 mb-1">Invoice</h2><p class="font-bold text-gray-700">Alfiren Travel</p><p>Jl. Soekarno Hatta No. 12, Labuan Bajo</p></div>
+                <div class="text-left sm:text-right"><p><span class="font-semibold text-gray-600">Invoice #:</span> <span id="invoice-id"></span></p><p><span class="font-semibold text-gray-600">Tanggal:</span> <span id="invoice-date"></span></p></div>
+            </div>
+            
+            <div class="border rounded-lg overflow-hidden">
+                <div class="p-4 bg-gray-50"><h4 class="font-bold text-gray-800">Detail Paket</h4></div>
+                <div class="p-4"><p id="invoice-package-name" class="font-semibold text-gray-800"></p><p id="invoice-package-date" class="text-sm text-gray-600"></p></div>
+                
+                <div class="border-t p-4 bg-gray-50"><h4 class="font-bold text-gray-800">Detail Pemesan</h4></div>
+                <div id="invoice-customer-details" class="p-4 text-sm text-gray-700 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2"></div>
+                
+                <div id="invoice-passenger-list-container">
+                    <div class="border-t p-4 bg-gray-50"><h4 class="font-bold text-gray-800">Detail Penumpang</h4></div>
+                    <div id="invoice-passenger-list" class="p-4 text-sm space-y-1"></div>
+                </div>
+
+                <div class="border-t p-4 bg-gray-50"><h4 class="font-bold text-gray-800">Rincian Biaya</h4></div>
+                <div id="invoice-cost-details" class="p-4 space-y-2 text-sm"></div>
+                
+                <div class="border-t p-4 bg-gray-50"><h4 class="font-bold text-gray-800">Metode Pembayaran</h4></div>
+                <div id="invoice-payment-method" class="p-4 text-sm font-semibold text-gray-800"></div>
+            </div>
+
+            <div class="mt-8 flex flex-col sm:flex-row gap-3">
+                <button onclick="window.print()" class="flex-1 bg-blue-600 text-white font-bold py-3 rounded-lg hover:bg-blue-700 transition-colors">Cetak / Download PDF</button>
+                <button id="btn-send-whatsapp-invoice" class="flex-1 bg-green-500 text-white font-bold py-3 rounded-lg hover:bg-green-600 flex items-center justify-center space-x-2 transition-colors"><i class="s-chat-bubble-left-right"></i><span>Kirim ke WhatsApp</span></button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- STATE & CONFIG ---
+        const WHATSAPP_NUMBER = '6282236942818'; // Ganti dengan nomor WA tujuan
+        const vehicleData = {
+            "Toyota Innova": { price: 650000, specs: ["Kapasitas: 7 orang", "Transmisi: Otomatis", "Fitur: AC, Audio, Reclining Seat"] },
+            "Toyota Hilux": { price: 750000, specs: ["Kapasitas: 5 penumpang", "Mesin: 2.4L Turbo Diesel", "Fitur: Bak Belakang Luas, 4x4"] }
+        };
+        const packageData = {
+            "dalam-kota": { name: "Paket Dalam Kota", price: 100000, priceText: "Rp 100.000" },
+            "luar-kota": { name: "Paket Luar Kota", price: 250000, priceText: "Rp 250.000 - 500.000" },
+            "antar-jemput": { name: "Antar Jemput", price: 200000, priceText: "Rp 200.000 - 1.000.000" },
+            "custom-tour": { name: "Custom Tour", price: 500000, priceText: "Mulai dari Rp 500.000" }
+        };
+        const bookingState = {
+            currentStep: 1,
+            passengers: 1,
+            vehicle: null,
+            paket: packageData["dalam-kota"],
+            paymentMethod: 'Transfer Bank',
+            isFinished: false,
+            invoiceId: null
+        };
+
+        // --- DOM ELEMENTS ---
+        const views = document.querySelectorAll('.step-view');
+        const stepperIndicators = document.querySelectorAll('.step-indicator');
+        const summary = {
+            passengerCount: document.getElementById('summary-passenger-count'),
+            packageName: document.getElementById('summary-package-name'),
+            packagePrice: document.getElementById('summary-package-price'),
+            vehicleName: document.getElementById('summary-vehicle-name'),
+            vehiclePrice: document.getElementById('summary-vehicle-price'),
+            totalPrice: document.getElementById('summary-total-price'),
+            buttons: document.getElementById('summary-buttons')
+        };
+        const passengerOptions = document.getElementById('passenger-options');
+        const packageSelect = document.getElementById('nama_paket');
+        const packageInfo = document.getElementById('paket-info');
+        const vehicleOptions = document.getElementById('vehicle-options');
+        const vehicleSpecsContainer = document.getElementById('vehicle-specs-container');
+        const paymentOptions = document.getElementById('payment-options');
+        const modal = document.getElementById('invoice-modal');
+
+        // --- UI FUNCTIONS ---
+        const updateStepper = () => {
+            stepperIndicators.forEach((indicator, index) => {
+                const stepNum = index + 1;
+                const circle = indicator.querySelector('.circle');
+                const label = indicator.querySelector('.label');
+                circle.classList.remove('bg-orange-500', 'text-white', 'bg-green-500', 'bg-gray-200', 'text-gray-500');
+                label.classList.remove('text-orange-500', 'text-green-600', 'text-gray-500');
+                circle.innerHTML = ''; 
+
+                if (stepNum < bookingState.currentStep) {
+                    circle.classList.add('bg-green-500', 'text-white');
+                    circle.innerHTML = `<i class="s-check"></i>`;
+                    label.classList.add('text-green-600');
+                } else if (stepNum === bookingState.currentStep) {
+                    circle.classList.add('bg-orange-500', 'text-white');
+                    circle.textContent = stepNum;
+                    label.classList.add('text-orange-500');
+                } else {
+                    circle.classList.add('bg-gray-200', 'text-gray-500');
+                    circle.textContent = stepNum;
+                    label.classList.add('text-gray-500');
+                }
+            });
+        };
+
+        const updateView = () => {
+            views.forEach(view => view.classList.remove('active'));
+            document.getElementById(`step-${bookingState.currentStep}-view`).classList.add('active');
+            updateStepper();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        };
+        
+        const updateSummary = () => {
+            const { passengers, vehicle, paket } = bookingState;
+            const hargaPaket = paket ? paket.price : 0;
+            const totalPaket = passengers * hargaPaket;
+            const biayaKendaraan = vehicle ? vehicle.price : 0;
+            const totalKeseluruhan = totalPaket + biayaKendaraan;
+
+            summary.passengerCount.textContent = passengers > 0 ? `${passengers} orang` : '-';
+            summary.packageName.textContent = paket ? paket.name : '-';
+            summary.packagePrice.textContent = paket ? `${paket.priceText} /org` : '-';
+            summary.vehicleName.textContent = vehicle ? vehicle.name : '-';
+            summary.vehiclePrice.textContent = vehicle ? `Rp ${biayaKendaraan.toLocaleString('id-ID')}` : '-';
+            summary.totalPrice.textContent = totalKeseluruhan > 0 ? `Rp ${totalKeseluruhan.toLocaleString('id-ID')}` : '-';
+        };
+
+        const generatePassengerForms = () => {
+            const container = document.getElementById('passenger-forms-container');
+            container.innerHTML = '';
+            for (let i = 1; i <= bookingState.passengers; i++) {
+                container.innerHTML += `
+                    <section class="border-t-2 border-dashed border-gray-200 pt-6">
+                        <h3 class="font-bold text-lg text-gray-800 mb-4">Data Penumpang ${i}</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+                            <div><label class="block text-sm font-medium text-gray-700">Nama Lengkap <span class="text-red-500">*</span></label><input type="text" data-passenger-id="${i}" data-field="nama" class="passenger-input mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200" required></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Nomor Telepon</label><input type="tel" data-passenger-id="${i}" data-field="telepon" class="passenger-input mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200"></div>
+                            <div><label class="block text-sm font-medium text-gray-700">Usia <span class="text-red-500">*</span></label><input type="number" data-passenger-id="${i}" data-field="usia" class="passenger-input mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:border-orange-500 focus:ring-2 focus:ring-orange-200" required></div>
+                        </div>
+                    </section>`;
+            }
+        };
+
+        // --- VALIDATION ---
+        const toggleError = (element, show) => {
+            element.classList.toggle('border-red-500', show);
+            element.classList.toggle('ring-1', show);
+            element.classList.toggle('ring-red-500', show);
+        };
+
+        const validateStep2 = () => {
+            let isValid = true;
+            const requiredFields = document.querySelectorAll('#step-2-view [required]');
+            
+            requiredFields.forEach(input => {
+                const isFieldValid = input.value.trim() !== '';
+                toggleError(input, !isFieldValid);
+                if (!isFieldValid) isValid = false;
+            });
+
+            if (!isValid) {
+                alert('Harap lengkapi semua data yang ditandai dengan *.');
+            }
+            return isValid;
+        };
+
+        // --- INVOICE LOGIC ---
+        const populateInvoice = () => {
+            // 1. Generate ID & Date
+            bookingState.invoiceId = `TRV-${new Date().getFullYear()}-${Math.floor(100 + Math.random() * 900)}`;
+            const invoiceDate = new Date().toLocaleDateString('id-ID', { day: '2-digit', month: 'long', year: 'numeric' });
+            
+            document.getElementById('invoice-id').textContent = bookingState.invoiceId;
+            document.getElementById('invoice-date').textContent = invoiceDate;
+            document.getElementById('invoice-package-name').textContent = bookingState.paket.name;
+            document.getElementById('invoice-package-date').textContent = "19-21 Juli 2025"; // Hardcoded as per HTML
+
+            // 2. Customer Details
+            const customerDetails = [
+                { label: 'Nama Pemesan', value: document.getElementById('nama_pemesan').value },
+                { label: 'Telepon', value: document.getElementById('telepon_pemesan').value },
+                { label: 'Email', value: document.getElementById('email_pemesan').value },
+                { label: 'Alamat Penjemputan', value: document.getElementById('alamat_penjemputan').value }
+            ];
+            const customerContainer = document.getElementById('invoice-customer-details');
+            customerContainer.innerHTML = customerDetails.map(item => `<div><strong>${item.label}:</strong><br>${item.value || '-'}</div>`).join('');
+
+            // 3. Passenger List
+            const passengerListContainer = document.getElementById('invoice-passenger-list');
+            const passengerInputs = document.querySelectorAll('.passenger-input');
+            const passengersData = {};
+            passengerInputs.forEach(input => {
+                const id = input.dataset.passengerId;
+                if (!passengersData[id]) passengersData[id] = {};
+                passengersData[id][input.dataset.field] = input.value;
+            });
+            passengerListContainer.innerHTML = Object.entries(passengersData).map(([id, data]) => {
+                return `<div><strong>Penumpang ${id}:</strong> ${data.nama} (${data.usia} tahun) ${data.telepon ? '- ' + data.telepon : ''}</div>`;
+            }).join('');
+            
+            // 4. Cost Details
+            const invoiceCost = document.getElementById('invoice-cost-details');
+            const totalPaket = bookingState.passengers * bookingState.paket.price;
+            const totalHarga = totalPaket + bookingState.vehicle.price;
+            invoiceCost.innerHTML = `
+                <div class="flex justify-between"><span>Harga Paket (${bookingState.passengers} x ${bookingState.paket.price.toLocaleString('id-ID')})</span><span>Rp ${totalPaket.toLocaleString('id-ID')}</span></div>
+                <div class="flex justify-between"><span>Biaya Kendaraan (${bookingState.vehicle.name})</span><span>Rp ${bookingState.vehicle.price.toLocaleString('id-ID')}</span></div>
+                <div class="flex justify-between font-bold border-t pt-2 mt-2"><span>Total Tagihan</span><span class="text-lg">Rp ${totalHarga.toLocaleString('id-ID')}</span></div>
+            `;
+
+            // 5. Payment Method
+            document.getElementById('invoice-payment-method').textContent = bookingState.paymentMethod;
+        };
+
+        // --- EVENT LISTENERS ---
+        passengerOptions.addEventListener('click', (e) => {
+            const selectedBox = e.target.closest('.passenger-box');
+            if (!selectedBox || bookingState.isFinished) return;
+            
+            bookingState.passengers = parseInt(selectedBox.dataset.penumpang);
+            document.querySelectorAll('.passenger-box').forEach(box => {
+                box.classList.remove('border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-200');
+                box.querySelectorAll('p').forEach(p => p.classList.remove('text-orange-500'));
+            });
+            selectedBox.classList.add('border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-200');
+            selectedBox.querySelectorAll('p').forEach(p => p.classList.add('text-orange-500'));
+            generatePassengerForms();
+            updateSummary();
+        });
+
+        packageSelect.addEventListener('change', () => {
+            bookingState.paket = packageData[packageSelect.value];
+            packageInfo.textContent = `${bookingState.paket.priceText}, tergantung durasi.`;
+            updateSummary();
+        });
+
+        vehicleOptions.addEventListener('click', (e) => {
+            const radio = e.target.closest('input[name="vehicle"]');
+            if (!radio || bookingState.isFinished) return;
+            const vehicleName = radio.dataset.name;
+            bookingState.vehicle = { name: vehicleName, ...vehicleData[vehicleName] };
+            
+            document.querySelectorAll('#vehicle-options > div').forEach(div => div.classList.remove('border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-300'));
+            radio.closest('.border-2').classList.add('border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-300');
+            
+            const specsHtml = `<strong>Spesifikasi ${vehicleName}:</strong><ul class="list-disc ml-5 mt-1">${vehicleData[vehicleName].specs.map(s => `<li>${s}</li>`).join('')}</ul>`;
+            vehicleSpecsContainer.innerHTML = specsHtml;
+            updateSummary();
+        });
+
+        paymentOptions.addEventListener('click', (e) => {
+             const radio = e.target.closest('input[name="payment"]');
+             if (!radio || bookingState.isFinished) return;
+             bookingState.paymentMethod = radio.value;
+             
+             document.querySelectorAll('#payment-options > div').forEach(div => div.classList.remove('border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-300'));
+             radio.closest('.border-2').classList.add('border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-300');
+
+             const targetId = radio.dataset.target;
+             document.querySelectorAll('.payment-info-content').forEach(info => info.classList.remove('active'));
+             document.getElementById(targetId).classList.add('active');
+        });
+        
+        document.querySelectorAll('.btn-next, #btn-finish').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (bookingState.isFinished) return;
+                
+                if (bookingState.currentStep === 1 && bookingState.passengers <= 0) { alert('Silakan pilih jumlah penumpang.'); return; }
+                if (bookingState.currentStep === 2 && !validateStep2()) return;
+                if (bookingState.currentStep === 3 && !bookingState.vehicle) { alert('Silakan pilih kendaraan.'); return; }
+                if (bookingState.currentStep === 4 && !bookingState.paymentMethod) { alert('Silakan pilih metode pembayaran.'); return; }
+                
+                if (btn.id === 'btn-finish') {
+                    bookingState.isFinished = true;
+                    summary.buttons.classList.remove('hidden');
+                    populateInvoice(); // Prepare invoice data
+                    alert('Pemesanan Berhasil! Invoice Anda siap untuk dilihat.');
+                } else {
+                    bookingState.currentStep++;
+                    updateView();
+                }
+            });
+        });
+
+        document.querySelectorAll('.btn-prev').forEach(btn => {
+            btn.addEventListener('click', () => {
+                if (bookingState.currentStep > 1 && !bookingState.isFinished) {
+                    bookingState.currentStep--;
+                    updateView();
+                }
+            });
+        });
+
+        // Modal Listeners
+        document.getElementById('btn-show-invoice').addEventListener('click', () => modal.classList.add('active'));
+        document.getElementById('btn-close-invoice').addEventListener('click', () => modal.classList.remove('active'));
+
+        // WhatsApp Listeners
+        const sendWhatsAppMessage = () => {
+            if (!bookingState.isFinished) return;
+            const nama = document.getElementById('nama_pemesan').value;
+            const total = summary.totalPrice.textContent;
+            const pesan = `Halo Alfiren Travel, saya ${nama}. Saya telah melakukan pemesanan dengan *Invoice ID: ${bookingState.invoiceId}* dan total pembayaran sebesar *${total}*. Mohon konfirmasi dan info selanjutnya. Terima kasih.`;
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(pesan)}`, '_blank');
+        };
+        
+        document.getElementById('btn-send-whatsapp').addEventListener('click', sendWhatsAppMessage);
+        document.getElementById('btn-send-whatsapp-invoice').addEventListener('click', sendWhatsAppMessage);
+
+
+        // --- INITIALIZATION ---
+        const init = () => {
+            // Populate package options
+            Object.keys(packageData).forEach(key => {
+                const pkg = packageData[key];
+                const option = new Option(pkg.name, key);
+                packageSelect.appendChild(option);
+            });
+            packageSelect.value = "dalam-kota";
+            
+            // Set default passenger UI
+            const defaultPassengerBox = document.querySelector('[data-penumpang="1"]');
+            defaultPassengerBox.classList.add('border-orange-500', 'bg-orange-50', 'ring-2', 'ring-orange-200');
+            defaultPassengerBox.querySelectorAll('p').forEach(p => p.classList.add('text-orange-500'));
+
+            // Initial calls to set up the UI correctly
+            generatePassengerForms();
+            updateView();
+            updateSummary();
+            
+            // Trigger initial state for components with defaults
+            document.querySelector('input[name="vehicle"]:checked')?.dispatchEvent(new Event('click', { bubbles: true }));
+            document.querySelector('input[name="payment"]:checked')?.dispatchEvent(new Event('click', { bubbles: true }));
+            packageSelect.dispatchEvent(new Event('change'));
+        };
+
+        init();
+    });
+    </script>
+</body>
+</html>

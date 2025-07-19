@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alfiren Admin CMS Panel</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Roboto', sans-serif; }
+        .table-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
+        .table-scroll::-webkit-scrollbar-thumb { background-color: #fbbf24; border-radius: 4px; }
+        .table-scroll::-webkit-scrollbar-track { background: #fef3c7; }
+        
+        /* Modal Styles */
+        .modal { display: none; }
+        .modal.active { display: flex; }
+
+        /* Responsive Table Styles for Mobile */
+        @media (max-width: 767px) {
+            .responsive-table thead {
+                display: none;
+            }
+            .responsive-table tbody, .responsive-table tr, .responsive-table td {
+                display: block;
+                width: 100%;
+            }
+            .responsive-table tr {
+                margin-bottom: 1rem;
+                border: 1px solid #fcd34d; /* yellow-300 */
+                border-radius: 0.5rem;
+                overflow: hidden;
+            }
+            .responsive-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+                padding-left: 1rem;
+                padding-right: 1rem;
+                border-bottom: 1px solid #fef3c7; /* yellow-100 */
+            }
+            .responsive-table td:last-child {
+                border-bottom: 0;
+            }
+            .responsive-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                text-align: left;
+                margin-right: 1rem;
+            }
+            .responsive-table td.actions-cell {
+                justify-content: center; /* Center buttons */
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body class="bg-yellow-50 min-h-screen flex flex-col">
+
+    <header class="bg-yellow-400 text-yellow-900 shadow-md sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold tracking-wide flex items-center gap-2"><i class="fas fa-cogs"></i> Alfiren Admin CMS</h1>
+            <nav class="space-x-6 text-yellow-900 font-semibold hidden md:flex">
+                <a class="hover:underline" href="#products">Products</a>
+                <a class="hover:underline" href="#banks">Bank Accounts</a>
+                <a class="hover:underline" href="#support">Support</a>
+            </nav>
+            <button class="md:hidden text-yellow-900 focus:outline-none" id="mobileMenuBtn"><i class="fas fa-bars fa-lg"></i></button>
+        </div>
+        <nav class="bg-yellow-300 text-yellow-900 font-semibold flex-col space-y-2 px-4 py-3 hidden md:hidden" id="mobileMenu">
+            <a class="hover:underline py-1" href="#products">Products</a>
+            <a class="hover:underline py-1" href="#banks">Bank Accounts</a>
+            <a class="hover:underline py-1" href="#support">Support</a>
+        </nav>
+    </header>
+
+    <main class="flex-grow max-w-7xl mx-auto px-4 py-8 w-full">
+        <section class="mb-12" id="products">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 border-b border-yellow-300 pb-2 gap-4">
+                <h2 class="text-yellow-900 text-2xl md:text-3xl font-extrabold flex items-center gap-3"><i class="fas fa-box-open"></i> Manage Products</h2>
+                <button id="addProductBtn" class="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 w-full sm:w-auto"><i class="fas fa-plus-circle"></i> Tambah Produk</button>
+            </div>
+            <div class="rounded-lg bg-yellow-100 shadow-md md:border md:border-yellow-300">
+                <table class="min-w-full text-yellow-900 responsive-table">
+                    <thead class="bg-yellow-300 text-yellow-900 font-semibold">
+                        <tr>
+                            <th class="px-4 py-3 text-left">ID</th>
+                            <th class="px-4 py-3 text-left">Name</th>
+                            <th class="px-4 py-3 text-right">Price (IDR)</th>
+                            <th class="px-4 py-3 text-center">Photo</th>
+                            <th class="px-4 py-3 text-left">Category</th>
+                            <th class="px-4 py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="mb-12" id="banks">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-6 border-b border-yellow-300 pb-2 gap-4">
+                <h2 class="text-yellow-900 text-2xl md:text-3xl font-extrabold flex items-center gap-3"><i class="fas fa-university"></i> Manage Bank Accounts</h2>
+                <button id="addBankBtn" class="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 font-bold py-2 px-4 rounded-lg flex items-center justify-center gap-2 w-full sm:w-auto"><i class="fas fa-plus-circle"></i> Tambah Bank</button>
+            </div>
+            <div class="rounded-lg bg-yellow-100 shadow-md md:border md:border-yellow-300 max-w-4xl mx-auto">
+                <table class="min-w-full text-yellow-900 responsive-table">
+                    <thead class="bg-yellow-300 text-yellow-900 font-semibold">
+                        <tr>
+                            <th class="px-4 py-3 text-left">ID</th>
+                            <th class="px-4 py-3 text-left">Bank Name</th>
+                            <th class="px-4 py-3 text-left">Account Number</th>
+                            <th class="px-4 py-3 text-left">Account Name</th>
+                            <th class="px-4 py-3 text-center">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="banksTableBody">
+                        </tbody>
+                </table>
+            </div>
+        </section>
+
+        <section class="max-w-md mx-auto bg-yellow-100 border border-yellow-300 rounded-lg shadow-md p-6 text-yellow-900 font-semibold text-center" id="support">
+            <i class="fas fa-headset text-yellow-600 text-4xl mb-4"></i>
+            <h3 class="text-yellow-900 text-2xl font-bold mb-2">Customer Support</h3>
+            <p class="text-yellow-800">Butuh bantuan atau ada pertanyaan? Hubungi tim support kami.</p>
+            <a class="inline-block mt-4 px-6 py-2 bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-semibold rounded-md transition-colors duration-300" href="https://avv.com" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-life-ring mr-2"></i>
+                Kunjungi avvbajotech.com
+            </a>
+        </section>
+    </main>
+
+    <footer class="bg-yellow-400 text-yellow-900 text-center py-4 font-semibold mt-8">
+        © 2025 Alfiren Admin CMS. All rights reserved.
+    </footer>
+
+    <div id="productModal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4">
+        <div class="bg-yellow-50 rounded-lg shadow-2xl w-full max-w-lg p-6 max-h-screen overflow-y-auto">
+            <h3 id="productModalTitle" class="text-2xl font-bold text-yellow-900 mb-4"></h3>
+            <form id="productForm" class="space-y-4">
+                <input type="hidden" id="productId">
+                <div><label for="productName" class="block font-semibold text-yellow-800">Product Name</label><input type="text" id="productName" class="w-full p-2 rounded border border-yellow-300 mt-1" required></div>
+                <div><label for="productPrice" class="block font-semibold text-yellow-800">Price (IDR)</label><input type="number" id="productPrice" class="w-full p-2 rounded border border-yellow-300 mt-1" required></div>
+                <div>
+                    <label for="productPhoto" class="block font-semibold text-yellow-800">Photo</label>
+                    <img id="photoPreview" class="hidden my-2 rounded h-20 w-20 object-cover" src="" alt="Photo preview">
+                    <input type="file" id="productPhoto" accept="image/*" class="w-full text-sm text-yellow-800 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-yellow-200 file:text-yellow-800 hover:file:bg-yellow-300">
+                    <small id="photoHelpText" class="text-xs text-yellow-700 hidden">Kosongkan jika tidak ingin mengubah foto.</small>
+                </div>
+                <div><label for="productCategory" class="block font-semibold text-yellow-800">Category</label><select id="productCategory" class="w-full p-2 rounded border border-yellow-300 mt-1"><option>Air Galon</option><option>Fashion</option><option>Produk Lainnya</option><option>Tour Travel</option></select></div>
+                <div class="flex justify-end gap-4 pt-4">
+                    <button type="button" id="cancelProduct" class="bg-gray-300 hover:bg-gray-400 font-bold py-2 px-4 rounded-lg">Cancel</button>
+                    <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 font-bold py-2 px-4 rounded-lg">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div id="bankModal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 items-center justify-center p-4">
+        <div class="bg-yellow-50 rounded-lg shadow-2xl w-full max-w-lg p-6">
+            <h3 id="bankModalTitle" class="text-2xl font-bold text-yellow-900 mb-4"></h3>
+            <form id="bankForm" class="space-y-4">
+                <input type="hidden" id="bankId">
+                <div><label for="bankName" class="block font-semibold text-yellow-800">Bank Name</label><input type="text" id="bankName" class="w-full p-2 rounded border border-yellow-300 mt-1" required></div>
+                <div><label for="accountNumber" class="block font-semibold text-yellow-800">Account Number</label><input type="text" id="accountNumber" class="w-full p-2 rounded border border-yellow-300 mt-1" required></div>
+                <div><label for="accountName" class="block font-semibold text-yellow-800">Account Name</label><input type="text" id="accountName" class="w-full p-2 rounded border border-yellow-300 mt-1" required></div>
+                <div class="flex justify-end gap-4 pt-4">
+                    <button type="button" id="cancelBank" class="bg-gray-300 hover:bg-gray-400 font-bold py-2 px-4 rounded-lg">Cancel</button>
+                    <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-yellow-900 font-bold py-2 px-4 rounded-lg">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // --- INITIAL DATA (DATABASE SIMULATION) ---
+        let products = [
+            { id: 1, name: "Air Galon 19L", price: 8000, photo: "https://storage.googleapis.com/a1aa/image/9436f1b4-9f2d-4030-d751-3063fa6ea3e1.jpg", category: "Air Galon" },
+            { id: 2, name: "Kaos Premium", price: 85000, photo: "https://storage.googleapis.com/a1aa/image/2a6db26c-5e62-4af1-c002-cd7d3c6ba605.jpg", category: "Fashion" },
+            { id: 3, name: "Paket Sehari-hari", price: 15000, photo: "https://storage.googleapis.com/a1aa/image/bc8e74a1-1bfb-4da9-91aa-1f2913d70c39.jpg", category: "Produk Lainnya" },
+            { id: 4, name: "Paket Liburan", price: 1500000, photo: "https://storage.googleapis.com/a1aa/image/19d167a2-73fb-40f5-7435-18c4a2fe42e3.jpg", category: "Tour Travel" }
+        ];
+
+        let bankAccounts = [
+            { id: 1, bankName: "BCA", accountNumber: "1234567890", accountName: "PT Alfiren Indonesia" },
+            { id: 2, bankName: "BNI", accountNumber: "9876543210", accountName: "PT Alfiren Indonesia" }
+        ];
+
+        // --- SELECTORS ---
+        const productsTableBody = document.getElementById('productsTableBody');
+        const banksTableBody = document.getElementById('banksTableBody');
+        const productModal = document.getElementById('productModal');
+        const bankModal = document.getElementById('bankModal');
+        const productForm = document.getElementById('productForm');
+        const bankForm = document.getElementById('bankForm');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        // --- RENDER FUNCTIONS ---
+        const renderProductsTable = () => {
+            productsTableBody.innerHTML = '';
+            products.forEach(p => {
+                productsTableBody.innerHTML += `
+                    <tr class="border-t border-yellow-300 hover:bg-yellow-200">
+                        <td class="px-4 py-3 align-top" data-label="ID">${p.id}</td>
+                        <td class="px-4 py-3 align-top font-semibold" data-label="Name">${p.name}</td>
+                        <td class="px-4 py-3 align-top text-right" data-label="Price (IDR)">${p.price.toLocaleString('id-ID')}</td>
+                        <td class="px-4 py-3 align-top text-center" data-label="Photo"><img src="${p.photo}" alt="${p.name}" class="mx-auto rounded h-16 w-16 object-cover"></td>
+                        <td class="px-4 py-3 align-top" data-label="Category">${p.category}</td>
+                        <td class="px-4 py-3 align-top text-center space-y-2 actions-cell" data-label="Actions">
+                            <button data-id="${p.id}" class="edit-product w-full max-w-xs mx-auto bg-blue-500 text-white p-2 rounded hover:bg-blue-600 flex items-center justify-center gap-1"><i class="fas fa-edit"></i> Edit</button>
+                            <button data-id="${p.id}" class="delete-product w-full max-w-xs mx-auto bg-red-500 text-white p-2 rounded hover:bg-red-600 flex items-center justify-center gap-1"><i class="fas fa-trash"></i> Hapus</button>
+                        </td>
+                    </tr>`;
+            });
+        };
+
+        const renderBankAccountsTable = () => {
+            banksTableBody.innerHTML = '';
+            bankAccounts.forEach(b => {
+                banksTableBody.innerHTML += `
+                    <tr class="border-t border-yellow-300 hover:bg-yellow-200">
+                        <td class="px-4 py-3 align-top" data-label="ID">${b.id}</td>
+                        <td class="px-4 py-3 align-top font-semibold" data-label="Bank Name">${b.bankName}</td>
+                        <td class="px-4 py-3 align-top" data-label="Account Number">${b.accountNumber}</td>
+                        <td class="px-4 py-3 align-top" data-label="Account Name">${b.accountName}</td>
+                        <td class="px-4 py-3 align-top text-center space-y-2 actions-cell" data-label="Actions">
+                           <button data-id="${b.id}" class="edit-bank w-full max-w-xs mx-auto bg-blue-500 text-white p-2 rounded hover:bg-blue-600 flex items-center justify-center gap-1"><i class="fas fa-edit"></i> Edit</button>
+                           <button data-id="${b.id}" class="delete-bank w-full max-w-xs mx-auto bg-red-500 text-white p-2 rounded hover:bg-red-600 flex items-center justify-center gap-1"><i class="fas fa-trash"></i> Hapus</button>
+                        </td>
+                    </tr>`;
+            });
+        };
+
+        // --- MODAL HANDLERS ---
+        const openProductModal = (title, product = null) => {
+            productForm.reset();
+            document.getElementById('productModalTitle').textContent = title;
+            const photoPreview = document.getElementById('photoPreview');
+            const photoHelpText = document.getElementById('photoHelpText');
+            const productPhotoInput = document.getElementById('productPhoto');
+
+            if (product) { // Edit Mode
+                document.getElementById('productId').value = product.id;
+                document.getElementById('productName').value = product.name;
+                document.getElementById('productPrice').value = product.price;
+                document.getElementById('productCategory').value = product.category;
+                photoPreview.src = product.photo;
+                photoPreview.classList.remove('hidden');
+                photoHelpText.classList.remove('hidden');
+                productPhotoInput.required = false;
+            } else { // Add Mode
+                document.getElementById('productId').value = '';
+                photoPreview.classList.add('hidden');
+                photoHelpText.classList.add('hidden');
+                productPhotoInput.required = true;
+            }
+            productModal.classList.add('active');
+        };
+        
+        const openBankModal = (title, bank = null) => {
+            bankForm.reset();
+            document.getElementById('bankModalTitle').textContent = title;
+            if (bank) { // Edit Mode
+                document.getElementById('bankId').value = bank.id;
+                document.getElementById('bankName').value = bank.bankName;
+                document.getElementById('accountNumber').value = bank.accountNumber;
+                document.getElementById('accountName').value = bank.accountName;
+            } else { // Add Mode
+                document.getElementById('bankId').value = '';
+            }
+            bankModal.classList.add('active');
+        };
+
+        const closeModal = (modal) => modal.classList.remove('active');
+
+        // --- EVENT LISTENERS ---
+        mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        document.getElementById('addProductBtn').addEventListener('click', () => openProductModal('Tambah Produk Baru'));
+        document.getElementById('addBankBtn').addEventListener('click', () => openBankModal('Tambah Rekening Bank Baru'));
+        document.getElementById('cancelProduct').addEventListener('click', () => closeModal(productModal));
+        document.getElementById('cancelBank').addEventListener('click', () => closeModal(bankModal));
+
+        productForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('productId').value;
+            const fileInput = document.getElementById('productPhoto');
+            const file = fileInput.files[0];
+
+            const handleData = (photoUrl) => {
+                const productData = {
+                    name: document.getElementById('productName').value,
+                    price: parseInt(document.getElementById('productPrice').value),
+                    category: document.getElementById('productCategory').value,
+                    photo: photoUrl
+                };
+
+                if (id) {
+                    const index = products.findIndex(p => p.id == id);
+                    products[index] = { ...products[index], ...productData };
+                } else {
+                    productData.id = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                    products.push(productData);
+                }
+                renderProductsTable();
+                closeModal(productModal);
+            };
+
+            if (file) {
+                const reader = new FileReader();
+                reader.onloadend = () => {
+                    handleData(reader.result); // Use base64 data URL
+                };
+                reader.readAsDataURL(file);
+            } else {
+                if (id) {
+                    const existingProduct = products.find(p => p.id == id);
+                    handleData(existingProduct.photo); // Keep existing photo
+                } else {
+                    alert("Please select a photo for the new product.");
+                }
+            }
+        });
+
+        bankForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const id = document.getElementById('bankId').value;
+            const bankData = {
+                bankName: document.getElementById('bankName').value,
+                accountNumber: document.getElementById('accountNumber').value,
+                accountName: document.getElementById('accountName').value
+            };
+            if (id) {
+                const index = bankAccounts.findIndex(b => b.id == id);
+                bankAccounts[index] = { id: parseInt(id), ...bankData };
+            } else {
+                bankData.id = bankAccounts.length > 0 ? Math.max(...bankAccounts.map(b => b.id)) + 1 : 1;
+                bankAccounts.push(bankData);
+            }
+            renderBankAccountsTable();
+            closeModal(bankModal);
+        });
+
+        productsTableBody.addEventListener('click', (e) => {
+            const editBtn = e.target.closest('.edit-product');
+            const deleteBtn = e.target.closest('.delete-product');
+            if (editBtn) {
+                const id = editBtn.dataset.id;
+                const product = products.find(p => p.id == id);
+                openProductModal(`Edit Produk #${id}`, product);
+            }
+            if (deleteBtn) {
+                const id = deleteBtn.dataset.id;
+                if (confirm(`Apakah Anda yakin ingin menghapus produk #${id}?`)) {
+                    products = products.filter(p => p.id != id);
+                    renderProductsTable();
+                }
+            }
+        });
+        
+        banksTableBody.addEventListener('click', (e) => {
+            const editBtn = e.target.closest('.edit-bank');
+            const deleteBtn = e.target.closest('.delete-bank');
+            if (editBtn) {
+                const id = editBtn.dataset.id;
+                const bank = bankAccounts.find(b => b.id == id);
+                openBankModal(`Edit Bank #${id}`, bank);
+            }
+            if (deleteBtn) {
+                const id = deleteBtn.dataset.id;
+                if (confirm(`Apakah Anda yakin ingin menghapus rekening bank #${id}?`)) {
+                    bankAccounts = bankAccounts.filter(b => b.id != id);
+                    renderBankAccountsTable();
+                }
+            }
+        });
+        
+        // --- INITIAL RENDER ---
+        renderProductsTable();
+        renderBankAccountsTable();
+    });
+    </script>
+</body>
+</html>
